@@ -1,5 +1,6 @@
 import checkComplete from './checkComplete.js';
 import deleteIcon from './deleteIcon.js';
+import { displayTasks } from './readTasks.js';
 
 export const addTask = (evento) => {//arrorw function de evento que genera el formulario
     evento.preventDefault();
@@ -11,6 +12,10 @@ export const addTask = (evento) => {//arrorw function de evento que genera el fo
     const date = calendar.value;
     const dateFormat = moment(date).format("DD/MM/YYYY");//Ayuda a dar formato con la libreria importada moment, con format da formato
 
+    if (value == '' || date == ''){//si no cumple la condicion no añade tarea
+        return//regresa el avance en el codigo y no se ejecuta lo demas
+    }
+
     input.value = '';//borra y limpia
     calendar.value = '';//borra y limpia
 
@@ -19,13 +24,13 @@ export const addTask = (evento) => {//arrorw function de evento que genera el fo
             dateFormat
         }
 
+    list.innerHTML = '';
     
     const taskList = JSON.parse(localStorage.getItem('tasks')) || [];//en caso de ser null o undefined, va al array. Parse regresa el objeto de string a numero. cte =  a lo almacenado en el localstorage con la llave task, lee la info, la entrega como JSON y con parse se vuelve un objeto de js
     taskList.push(taskObj);//ingresa la info en formato del taskobj al tasklist
     localStorage.setItem('tasks', JSON.stringify(taskList));//almacenar el tasklist como string de js en JSON
 
-    const task = createTask(taskObj);//crea la tarea en el formato taskObj
-    list.appendChild(task);//agrega la tarea a la lista con su respectivo data atribute
+    displayTasks();//crea tarea en formato taskObj y la añade a la lista con su data atribute-reemplaza don funciones anteriores
 }
 
 export const createTask = ({value, dateFormat}) => {//cte que recibe el objeto {}
